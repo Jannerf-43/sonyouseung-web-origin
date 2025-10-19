@@ -1,0 +1,104 @@
+// src/data/posts.ts
+import { notFound } from 'next/navigation'
+
+export interface Post {
+  slug: string // URL 및 조회 키 (string 사용 권장)
+  title: string
+  category: 'Python' | 'Next.js & React' | '개발 트렌드' | '일상 & 생각'
+  date: string // ISO 8601 형식 (YYYY-MM-DD) 또는 'YYYY년 MM월 DD일' 형식
+  excerpt: string
+  content: string
+}
+
+const DUMMY_POSTS: Post[] = [
+  // 1. 개발 트렌드 (최신 날짜)
+  {
+    slug: 'ai-development-future',
+    title: '2026년 AI 개발 트렌드 전망',
+    category: '개발 트렌드',
+    date: '2025-10-20',
+    excerpt:
+      'LLM의 발전과 Edge AI의 확산 등 다가올 개발 환경 변화를 예측합니다.',
+    content:
+      '인공지능 기술은 빠르게 발전하고 있으며, 개발자들은 끊임없이 새로운 도구와 패러다임을 익혀야 합니다.',
+  },
+  // 2. 일상 & 생각
+  {
+    slug: 'daily-coding-routine',
+    title: '효율적인 코딩 루틴 만들기',
+    category: '일상 & 생각',
+    date: '2025-10-19',
+    excerpt: '집중력을 높이고 번아웃을 방지하는 나만의 코딩 습관 공유.',
+    content:
+      '매일 일정한 시간에 코딩을 시작하고 짧은 휴식을 자주 취하는 것이 중요합니다.',
+  },
+  // 3. Next.js & React (App Router)
+  {
+    slug: 'nextjs-app-router-guide',
+    title: 'Next.js App Router 101: 기본 가이드',
+    category: 'Next.js & React',
+    date: '2025-10-18',
+    excerpt:
+      'Next.js의 새로운 App Router 구조와 서버/클라이언트 컴포넌트 사용법을 정리했습니다.',
+    content: `## Next.js App Router 개요
+    Next.js 13부터 도입된 App Router는 React Server Components를 기반으로 하며, 데이터 패칭 방식과 라우팅 시스템에 큰 변화를 가져왔습니다. 
+    
+    ### 주요 개념
+    1.  **Server Components:** 서버에서 렌더링됩니다.
+    2.  **Client Components:** 브라우저에서 상호작용성(useState, useEffect 등)이 필요할 때 사용됩니다.
+    
+    App Router는 개발의 유연성과 성능 최적화를 동시에 제공합니다.`,
+  },
+  // 4. Python
+  {
+    slug: 'python-data-structures',
+    title: '파이썬 핵심 자료 구조 5가지',
+    category: 'Python',
+    date: '2025-10-17',
+    excerpt:
+      '리스트, 딕셔너리, 튜플, 셋의 기본적인 사용법과 성능을 비교 분석합니다.',
+    content:
+      '파이썬 프로그래밍의 효율성을 높이는 가장 기본적인 단계는 적절한 자료 구조를 선택하는 것입니다.',
+  },
+  // 5. 개발 트렌드
+  {
+    slug: 'web-assembly-intro',
+    title: 'WebAssembly (Wasm) 입문',
+    category: '개발 트렌드',
+    date: '2025-10-16',
+    excerpt: '웹 환경에서 C/C++ 같은 언어를 실행하는 Wasm의 기본 원리.',
+    content: 'WebAssembly는 웹의 성능 한계를 뛰어넘기 위해 등장한 기술입니다.',
+  },
+  // 6. Next.js & React (Hooks)
+  {
+    slug: 'react-hooks-deep-dive',
+    title: 'React Hooks: useEffect 대신 use-what?',
+    category: 'Next.js & React',
+    date: '2025-10-15',
+    excerpt:
+      '더 이상 복잡한 useEffect에 의존하지 않고 상태를 관리하는 최신 React 방법론을 소개합니다.',
+    content:
+      'React 개발에서 흔히 발생하는 side effect 관리의 어려움을 줄이는 새로운 Hooks 사용 패턴에 대한 자세한 내용입니다.',
+  },
+]
+
+export function getPosts(): Post[] {
+  // ISO 형식 (YYYY-MM-DD)을 Date 객체로 변환하여 최신순으로 정렬합니다.
+  const sortedPosts = DUMMY_POSTS.sort((a, b) => {
+    // Date 객체로 변환하여 비교
+    const dateA = new Date(a.date)
+    const dateB = new Date(b.date)
+    // 내림차순 정렬 (최신 날짜가 앞으로 오도록)
+    return dateB.getTime() - dateA.getTime()
+  })
+  return sortedPosts
+}
+
+export function getPostBySlug(slug: string): Post {
+  const post = DUMMY_POSTS.find((p) => p.slug === slug)
+  if (!post) {
+    // 해당 slug의 게시물이 없으면 404를 반환
+    notFound()
+  }
+  return post
+}
