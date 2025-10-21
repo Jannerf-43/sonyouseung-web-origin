@@ -1,8 +1,6 @@
 // app/page.tsx
 import Link from 'next/link'
 import { getPosts, Post } from '@/data/posts'
-
-// 1. Clerk 컴포넌트 임포트
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
 
 // 게시물 카드를 재사용하기 위한 컴포넌트
@@ -48,7 +46,7 @@ function MainContent() {
         </p>
       </header>
 
-      {/* 최근 포스트 섹션 */}
+      {/* 최근 포스트 */}
       <div className="mb-12">
         <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">
           최근 포스트
@@ -66,7 +64,7 @@ function MainContent() {
         )}
       </div>
 
-      {/* 전체 포스트 목록으로 이동 */}
+      {/* 전체 게시물 이동 */}
       <div className="text-center mt-10">
         <Link
           href="/posts"
@@ -82,12 +80,9 @@ function MainContent() {
 export default function HomePage() {
   return (
     <>
-      {/* 2. 로그인했을 때 MainContent를 보여줍니다. */}
       <SignedIn>
         <MainContent />
       </SignedIn>
-
-      {/* 3. 로그아웃했을 때 로그인 유도 화면을 보여줍니다. */}
       <SignedOut>
         <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-xl shadow-xl p-10">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4">

@@ -1,17 +1,15 @@
-// src/data/posts.ts
 import { notFound } from 'next/navigation'
 
 export interface Post {
-  slug: string // URL 및 조회 키 (string 사용 권장)
+  slug: string
   title: string
   category: 'Python' | 'Next.js & React' | '개발 트렌드' | '일상 & 생각'
-  date: string // ISO 8601 형식 (YYYY-MM-DD) 또는 'YYYY년 MM월 DD일' 형식
+  date: string
   excerpt: string
   content: string
 }
 
 const DUMMY_POSTS: Post[] = [
-  // 1. 개발 트렌드 (최신 날짜)
   {
     slug: 'ai-development-future',
     title: '2026년 AI 개발 트렌드 전망',
@@ -22,7 +20,6 @@ const DUMMY_POSTS: Post[] = [
     content:
       '인공지능 기술은 빠르게 발전하고 있으며, 개발자들은 끊임없이 새로운 도구와 패러다임을 익혀야 합니다.',
   },
-  // 2. 일상 & 생각
   {
     slug: 'daily-coding-routine',
     title: '효율적인 코딩 루틴 만들기',
@@ -32,7 +29,6 @@ const DUMMY_POSTS: Post[] = [
     content:
       '매일 일정한 시간에 코딩을 시작하고 짧은 휴식을 자주 취하는 것이 중요합니다.',
   },
-  // 3. Next.js & React (App Router)
   {
     slug: 'nextjs-app-router-guide',
     title: 'Next.js App Router 101: 기본 가이드',
@@ -49,7 +45,6 @@ const DUMMY_POSTS: Post[] = [
     
     App Router는 개발의 유연성과 성능 최적화를 동시에 제공합니다.`,
   },
-  // 4. Python
   {
     slug: 'python-data-structures',
     title: '파이썬 핵심 자료 구조 5가지',
@@ -60,7 +55,6 @@ const DUMMY_POSTS: Post[] = [
     content:
       '파이썬 프로그래밍의 효율성을 높이는 가장 기본적인 단계는 적절한 자료 구조를 선택하는 것입니다.',
   },
-  // 5. 개발 트렌드
   {
     slug: 'web-assembly-intro',
     title: 'WebAssembly (Wasm) 입문',
@@ -69,7 +63,6 @@ const DUMMY_POSTS: Post[] = [
     excerpt: '웹 환경에서 C/C++ 같은 언어를 실행하는 Wasm의 기본 원리.',
     content: 'WebAssembly는 웹의 성능 한계를 뛰어넘기 위해 등장한 기술입니다.',
   },
-  // 6. Next.js & React (Hooks)
   {
     slug: 'react-hooks-deep-dive',
     title: 'React Hooks: useEffect 대신 use-what?',
@@ -114,13 +107,11 @@ const DUMMY_POSTS: Post[] = [
   },
 ]
 
+// 이름만 date인 string을 진짜 Date 타입으로 변환해서 정렬
 export function getPosts(): Post[] {
-  // ISO 형식 (YYYY-MM-DD)을 Date 객체로 변환하여 최신순으로 정렬합니다.
   const sortedPosts = DUMMY_POSTS.sort((a, b) => {
-    // Date 객체로 변환하여 비교
     const dateA = new Date(a.date)
     const dateB = new Date(b.date)
-    // 내림차순 정렬 (최신 날짜가 앞으로 오도록)
     return dateB.getTime() - dateA.getTime()
   })
   return sortedPosts
@@ -129,7 +120,6 @@ export function getPosts(): Post[] {
 export function getPostBySlug(slug: string): Post {
   const post = DUMMY_POSTS.find((p) => p.slug === slug)
   if (!post) {
-    // 해당 slug의 게시물이 없으면 404를 반환
     notFound()
   }
   return post
