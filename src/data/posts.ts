@@ -77,8 +77,40 @@ const DUMMY_POSTS: Post[] = [
     date: '2025-10-15',
     excerpt:
       '더 이상 복잡한 useEffect에 의존하지 않고 상태를 관리하는 최신 React 방법론을 소개합니다.',
-    content:
-      'React 개발에서 흔히 발생하는 side effect 관리의 어려움을 줄이는 새로운 Hooks 사용 패턴에 대한 자세한 내용입니다.',
+    content: `
+        <p>React 개발에서 흔히 발생하는 side effect 관리의 어려움을 줄이는 새로운 Hooks 사용 패턴에 대한 자세한 내용입니다. 11111
+        
+        <a 
+            href="https://www.naver.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style="color: #4f46e5; text-decoration: underline; font-weight: 600;"
+        >
+            네이버
+        </a>링크 시험. (수정됨)</p>
+    `,
+  },
+  {
+    slug: 'webserverprograming',
+    title: '웹서버보안프로그래밍 실습',
+    category: '개발 트렌드',
+    date: '2025-10-21',
+    excerpt: '중부대학교 재학중 웹서버보안프로그래밍 실습의 결과를 소개합니다.',
+    content: `
+        <p>웹서버보안프로그래밍 실습을 진행하며 Next.js 를 사용하여 만든 실습 웹서버 사이트의 경로 입니다. 
+        <br>
+        웹서버 사이트 주소 : http://celrk-web-2.vercel.app
+        <br>
+        
+        <a 
+            href="//celrk-web-2.vercel.app" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style="color: #4f46e5; text-decoration: underline; font-weight: 600;"
+        >
+            실습링크 가기
+        </a> 클릭하시오 </p>
+    `,
   },
 ]
 
