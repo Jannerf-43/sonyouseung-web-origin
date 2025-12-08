@@ -1,85 +1,86 @@
-import React from 'react'
-import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getPostBySlug, getPosts } from '@/data/posts'
+import { notFound } from 'next/navigation'
+import Comments from '@/components/comments/Comments'
+import DeleteButton from '@/components/post/DeleteButton'
 
-interface PostDetailPageProps {
-  params: {
-    post_id: string
-  }
+export const runtime = 'nodejs'
+
+// ---------------------------
+// 서버에서 게시물 조회
+// ---------------------------
+async function getPost(slug: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/posts/${slug}`,
+    { cache: 'no-store' }
+  )
+
+  if (!res.ok) return null
+  const data = await res.json()
+  return data.post
 }
 
-// post_id, slug 오류 임시 해결
-export async function generateStaticParams() {
-  const posts = getPosts()
+// ---------------------------
+// 상세 페이지
+// ---------------------------
+export default async function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ post_id: string }>
+}) {
+  // ⭐ Next.js 15: 반드시 await!
+  const { post_id } = await params
 
-  return posts.map((post) => ({
-    post_id: post.slug,
-  }))
-}
-
-export default async function PostDetailPage({ params }: PostDetailPageProps) {
-  const { post_id: postId } = await params
-
-  if (!postId) {
-    notFound()
-  }
-
-  const post = getPostBySlug(postId)
+  const post = await getPost(post_id)
+  if (!post) notFound()
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      {/* 본문 영역 */}
       <article className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        {/* 글 제목 */}
         <h1 className="text-4xl font-extrabold text-gray-900 mb-4 break-words">
           {post.title}
         </h1>
+
         <div className="text-sm text-gray-500 mb-8 border-b pb-4 flex justify-between items-center">
-          <span>
-            {/* 카테고리 */}
-            <span className="font-medium mr-3 text-blue-600 bg-blue-50 px-2 py-1 rounded-full text-xs uppercase tracking-wider">
+          <span className="flex items-center space-x-3">
+            <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full text-xs uppercase tracking-wider">
               {post.category}
             </span>
-            {/* 게시일 */}
-            <time dateTime={post.date}>{post.date} 작성</time>
+
+            <time>
+              {new Date(post.createdAt).toLocaleDateString('ko-KR')} 작성
+            </time>
           </span>
-          {/* 뒤로가기 */}
-          <Link
-            href="/posts"
-            className="text-blue-500 hover:text-blue-700 text-sm font-medium transition flex items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+
+          <div className="flex items-center space-x-4">
+            <Link
+              href="/posts"
+              className="text-blue-500 hover:text-blue-700 text-sm font-medium"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            목록으로 돌아가기
-          </Link>
+              ← 목록으로
+            </Link>
+
+            <Link
+              href={`/posts/${post_id}/edit`}
+              className="text-indigo-600 font-medium hover:text-indigo-800"
+            >
+              ✏️ 수정하기
+            </Link>
+
+            <DeleteButton slug={post_id} />
+          </div>
         </div>
 
-        {/* 실제 게시물 본문 */}
-        <div className="prose max-w-none prose-lg prose-indigo text-gray-800">
-          <p className="lead font-medium text-lg mb-8 border-l-4 border-indigo-400 pl-4 italic bg-indigo-50 p-4 rounded-md">
-            {/* 게시물 요약본 */}
-            {post.excerpt}
-          </p>
-          {/* 실제 게시물 상세*/}
-          <div
-            className="mt-8"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </div>
+        <p className="lead font-medium text-lg mb-8 border-l-4 border-indigo-400 pl-4 italic bg-indigo-50 p-4 rounded-md">
+          {post.excerpt}
+        </p>
+
+        <div
+          className="mt-8 prose prose-indigo max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </article>
+
+      <Comments slug={post_id} />
     </div>
   )
 }

@@ -1,18 +1,26 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+export const runtime = 'nodejs'
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+import { clerkMiddleware } from '@clerk/nextjs/server'
+import { connectDB } from '@/lib/mongodb'
+import { UserProfile } from '@/models/UserProfile'
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
+export default clerkMiddleware(async (auth) => {
+  const { userId } = await auth()
+
+  if (userId) {
+    await connectDB()
+
+    const existing = await UserProfile.findOne({ clerkUserId: userId })
+
+    if (!existing) {
+      await UserProfile.create({
+        clerkUserId: userId,
+        role: 'basic',
+      })
+    }
   }
 })
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 }
