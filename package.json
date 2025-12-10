@@ -13,7 +13,7 @@
     "@types/mongoose": "^5.11.96",
     "geist": "^1.5.1",
     "mongoose": "^9.0.1",
-    "next": "15.5.6",
+    "next": "^16.1.0-canary.16",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
